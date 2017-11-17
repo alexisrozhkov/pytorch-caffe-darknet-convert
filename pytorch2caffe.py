@@ -11,6 +11,7 @@ from prototxt import *
 
 layer_dict = {'ConvNdBackward'    : 'Convolution',
               'ThresholdBackward' : 'ReLU',
+              'LeakyReLUBackward' : 'ReLU',
               'MaxPool2dBackward' : 'Pooling',
               'AvgPool2dBackward' : 'Pooling',
               'DropoutBackward'   : 'Dropout',
@@ -170,6 +171,11 @@ def pytorch2prototxt(input_var, output_var):
             scale_param['bias_term'] = 'true'
             scale_layer['scale_param'] = scale_param
         elif parent_type == 'ThresholdBackward':
+            parent_top = parent_bottoms[0]
+        elif parent_type == 'LeakyReLUBackward':
+            relu_param = OrderedDict()
+            relu_param['negative_slope'] = func.additional_args[0]
+            layer['relu_param'] = relu_param
             parent_top = parent_bottoms[0]
         elif parent_type == 'SoftmaxBackward':
             parent_top = parent_bottoms[0]
