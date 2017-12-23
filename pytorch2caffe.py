@@ -9,18 +9,19 @@ import numpy as np
 from torch.autograd import Variable
 from prototxt import *
 
-layer_dict = {'ConvNdBackward'    : 'Convolution',
-              'ThresholdBackward' : 'ReLU',
-              'LeakyReLUBackward' : 'ReLU',
-              'MaxPool2dBackward' : 'Pooling',
-              'AvgPool2dBackward' : 'Pooling',
-              'DropoutBackward'   : 'Dropout',
-              'AddmmBackward'     : 'InnerProduct',
-              'BatchNormBackward' : 'BatchNorm',
-              'AddBackward'       : 'Eltwise',
-              'SoftmaxBackward'   : 'Softmax',
-              'ViewBackward'      : 'Reshape',
-              'ConcatBackward'    : 'Concat'}
+layer_dict = {'ConvNdBackward'            : 'Convolution',
+              'ThresholdBackward'         : 'ReLU',
+              'LeakyReLUBackward'         : 'ReLU',
+              'MaxPool2dBackward'         : 'Pooling',
+              'AvgPool2dBackward'         : 'Pooling',
+              'AdaptiveAvgPool2dBackward' : 'Pooling',
+              'DropoutBackward'           : 'Dropout',
+              'AddmmBackward'             : 'InnerProduct',
+              'BatchNormBackward'         : 'BatchNorm',
+              'AddBackward'               : 'Eltwise',
+              'SoftmaxBackward'           : 'Softmax',
+              'ViewBackward'              : 'Reshape',
+              'ConcatBackward'            : 'Concat'}
 
 layer_id = 0
 def pytorch2caffe(input_var, output_var, protofile, caffemodel):
@@ -192,6 +193,11 @@ def pytorch2prototxt(input_var, output_var):
             pooling_param['pool'] = 'AVE'
             pooling_param['kernel_size'] = func.kernel_size[0]
             pooling_param['stride'] = func.stride[0]
+            layer['pooling_param'] = pooling_param
+        elif parent_type == 'AdaptiveAvgPool2dBackward':
+            pooling_param = OrderedDict()
+            pooling_param['pool'] = 'AVE'
+            pooling_param['global_pooling'] = 'true'
             layer['pooling_param'] = pooling_param
         elif parent_type == 'DropoutBackward':
             parent_top = parent_bottoms[0]
