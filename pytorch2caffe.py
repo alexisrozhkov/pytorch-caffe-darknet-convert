@@ -19,7 +19,8 @@ layer_dict = {'ConvNdBackward'    : 'Convolution',
               'BatchNormBackward' : 'BatchNorm',
               'AddBackward'       : 'Eltwise',
               'SoftmaxBackward'   : 'Softmax',
-              'ViewBackward'      : 'Reshape'}
+              'ViewBackward'      : 'Reshape',
+              'ConcatBackward'    : 'Concat'}
 
 layer_id = 0
 def pytorch2caffe(input_var, output_var, protofile, caffemodel):
